@@ -41,14 +41,34 @@ parse-options() {
   [[ "$#" -gt "1" ]] && export path=$2
 }
 
+status() {
+  local path=$1
+  local pidfile="$path/.autotags.pid"
+
+  if [ -f "$pidfile" ]; then
+    local pid; pid="$(cat "$pidfile")"
+
+    if kill -0 "$pid" > /dev/null 2>&1; then
+      echo "looks like autotags is running in $path"
+      exit 0
+    else
+      echo "looks like autotags in not running in $path"
+      echo "warning: the lock file $pidfile exists"
+      echo 'please delete the file if autotags is really not running'
+      echo 2
+    fi
+  else
+    echo "looks like autotags is not running in $path"
+    exit 1
+  fi
+}
+
 dispatch-command() {
   local cmd=$1
   local path=$2
 
   case "$cmd" in
-    status)
-      echo 'running status'
-      ;;
+    status) status $path ;;
     watch)
       echo 'running watch'
       ;;
@@ -68,4 +88,3 @@ dispatch-command() {
 
 parse-options "$@"
 dispatch-command $cmd $path
-echo "autocmd '$cmd' '$path' (verbose: $verbose)"
