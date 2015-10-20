@@ -21,7 +21,6 @@ HELP
 # options
 parse-options() {
   export verbose=0
-  export cmd=
   export path=.
   OPTIND=1
   while getopts 'hv' opt; do
