@@ -12,6 +12,7 @@ Options:
   -h:  display this help message
 
 Commands:
+  help:    display this help message
   status:  display whether or the given path is being watched or not
   watch:   monitor the given directory for changes and generate ctags
   stop:    stop monitoring the given directory
@@ -25,13 +26,13 @@ parse-options() {
   OPTIND=1
   while getopts 'hv' opt; do
     case "$opt" in
-    v)
-      export verbose=1
-      ;;
-    h|?)
-      display-help
-      exit
-      ;;
+      v)
+        export verbose=1
+        ;;
+      h|?)
+        display-help
+        exit
+        ;;
     esac
   done
   shift $((OPTIND - 1))
@@ -40,5 +41,31 @@ parse-options() {
   [[ "$#" -gt "1" ]] && export path=$2
 }
 
+dispatch-command() {
+  local cmd=$1
+  local path=$2
+
+  case "$cmd" in
+    status)
+      echo 'running status'
+      ;;
+    watch)
+      echo 'running watch'
+      ;;
+    stop)
+      echo 'running stop'
+      ;;
+    help)
+      display-help
+      ;;
+    *)
+      echo "unknown command: $cmd"
+      display-help
+      exit 1
+      ;;
+  esac
+}
+
 parse-options "$@"
+dispatch-command $cmd $path
 echo "autocmd '$cmd' '$path' (verbose: $verbose)"
