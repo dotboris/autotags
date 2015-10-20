@@ -13,9 +13,20 @@ end
 def raw_autotags(*args)
   status = nil
   Dir.chdir Pathname.new(__FILE__) + '../..' do
-    _, status = Open3.capture2e './autotags', *args
+    _, status = Open3.capture2e './autotags', *(args.map(&:to_s))
   end
   status.exitstatus
+end
+
+def tmpdir
+  path = Dir.mktmpdir
+  Pathname.new path
+end
+
+def dummy_proc
+  Process.fork do
+    sleep
+  end
 end
 
 RSpec.configure do |config|

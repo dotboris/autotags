@@ -54,14 +54,15 @@ status() {
   if [ -f "$pidfile" ]; then
     local pid; pid="$(cat "$pidfile")"
 
-    if kill -0 "$pid" > /dev/null 2>&1; then
+    kill -0 "$pid" > /dev/null 2>&1
+    if [[ "$?" -eq '0' ]]; then
       echo "looks like autotags is running in $path"
       exit 0
     else
       echo "looks like autotags in not running in $path"
       echo "warning: the lock file $pidfile exists"
       echo 'please delete the file if autotags is really not running'
-      echo 2
+      exit 2
     fi
   else
     echo "looks like autotags is not running in $path"
