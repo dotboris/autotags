@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# commands
+display-help() {
+  cat <<'HELP'
+usage: autotags [options] <command> <path>
+  command: a command to run (see below)
+  path:    directory to operate on (defaut: .)
+
+Options:
+  -v:  enable verbose logging
+  -h:  display this help message
+
+Commands:
+  status:  display whether or the given path is being watched or not
+  watch:   monitor the given directory for changes and generate ctags
+  stop:    stop monitoring the given directory
+HELP
+}
+
+# options
+parse-options() {
+  export verbose=0
+  export cmd=
+  export path=.
+  OPTIND=1
+  while getopts 'hv' opt; do
+    case "$opt" in
+    v)
+      export verbose=1
+      ;;
+    h|?)
+      display-help
+      exit
+      ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+
+  export cmd=$1
+  [[ "$#" -gt "1" ]] && export path=$2
+}
+
+parse-options "$@"
+echo "autocmd '$cmd' '$path' (verbose: $verbose)"
