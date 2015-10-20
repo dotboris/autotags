@@ -11,10 +11,8 @@ def autotags(command, path = nil, verbose: false)
 end
 
 def raw_autotags(*args)
-  status = nil
-  Dir.chdir Pathname.new(__FILE__) + '../..' do
-    _, status = Open3.capture2e './autotags', *(args.map(&:to_s))
-  end
+  script = Pathname.new(__FILE__) + '../../autotags'
+  _, status = Open3.capture2e script.to_s, *(args.map(&:to_s))
   status.exitstatus
 end
 
