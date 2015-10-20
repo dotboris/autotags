@@ -10,4 +10,10 @@ describe 'autotags' do
       expect(raw_autotags '-h').to eq 0
     end
   end
+
+  describe 'help' do
+    it 'should succeed' do
+      expect(autotags 'help').to eq 0
+    end
+  end
 end
