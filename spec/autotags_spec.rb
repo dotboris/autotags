@@ -1,8 +1,13 @@
-describe 'the world' do
-  it 'should make sence' do
-    expect(42).to eq 42
-  end
-end
-
 describe 'autotags' do
+  context 'with no arguments' do
+    it 'should fail' do
+      expect(raw_autotags).not_to eq 0
+    end
+  end
+
+  describe '-h' do
+    it 'should succeed' do
+      expect(raw_autotags '-h').to eq 0
+    end
+  end
 end
