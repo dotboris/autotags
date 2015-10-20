@@ -116,7 +116,6 @@ stop() {
     display-not-running $path
     exit 1
   fi
-  local pid; pid=$(cat $pidfile)
 }
 
 dispatch-command() {
