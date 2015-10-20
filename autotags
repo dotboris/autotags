@@ -1,6 +1,35 @@
 #!/bin/bash
 
-# commands
+# helpers
+pidfile-path() {
+  echo "$1/.autotags.pid"
+}
+
+pid-running() {
+  kill -0 "$1" > /dev/null 1>&2
+  if [[ "$?" -eq '0' ]]; then
+    true
+  else
+    false
+  fi
+}
+
+display-running() {
+  echo "looks like autotags is not running in $1"
+}
+
+display-dangling-pidfile() {
+  local pidfile; pidfile=pidfile-path $1
+
+  echo "looks like autotags in not running in $1"
+  echo "warning: the lock file $pidfile exists"
+  echo 'please delete the file if autotags is really not running'
+}
+
+display-not-running() {
+  echo "looks like autotags is not running in $1"
+}
+
 display-help() {
   cat <<'HELP'
 usage: autotags [options] <command> <path>
@@ -47,27 +76,47 @@ parse-options() {
   [[ "$#" -gt "1" ]] && export path=$2
 }
 
+# commands
 status() {
   local path=$1
-  local pidfile="$path/.autotags.pid"
+  local pidfile; pidfile=$(pidfile-path $1)
 
   if [ -f "$pidfile" ]; then
     local pid; pid="$(cat "$pidfile")"
 
-    kill -0 "$pid" > /dev/null 2>&1
-    if [[ "$?" -eq '0' ]]; then
-      echo "looks like autotags is running in $path"
+    if pid-running $pid; then
+      display-running $path
       exit 0
     else
-      echo "looks like autotags in not running in $path"
-      echo "warning: the lock file $pidfile exists"
-      echo 'please delete the file if autotags is really not running'
+      display-dangling-pidfile $path
       exit 2
     fi
   else
-    echo "looks like autotags is not running in $path"
+    display-not-running $path
     exit 1
   fi
+}
+
+stop() {
+  local path=$1
+  local pidfile; pidfile=$(pidfile-path $1)
+
+  if [ -f "$pidfile" ]; then
+    local pid; pid=$(cat $pidfile)
+
+    if pid-running $pid; then
+      kill $pid
+      wait $pid
+      exit 0
+    else
+      display-dangling-pidfile
+      exit 2
+    fi
+  else
+    display-not-running $path
+    exit 1
+  fi
+  local pid; pid=$(cat $pidfile)
 }
 
 dispatch-command() {
@@ -79,9 +128,7 @@ dispatch-command() {
     watch)
       echo 'running watch'
       ;;
-    stop)
-      echo 'running stop'
-      ;;
+    stop) stop $path ;;
     help)
       display-help
       ;;

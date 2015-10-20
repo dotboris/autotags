@@ -22,9 +22,33 @@ def tmpdir
 end
 
 def dummy_proc
-  Process.fork do
+  pid = Process.fork do
     sleep
   end
+  Thread.new { Process.wait pid }
+  pid
+end
+
+def clean_dir(dir)
+  begin
+    pidfile = dir + '.autotags.pid'
+    if pidfile.exist?
+      pid = pidfile.read.to_i
+      Process.kill 9, pid
+      Process.wait pid
+    end
+  rescue # rubocop:disable Lint/HandleExceptions
+    # ignore error
+  end
+
+  dir.rmtree
+end
+
+def pid_running?(pid)
+  Process.kill 0, pid
+  true
+rescue
+  false
 end
 
 RSpec.configure do |config|

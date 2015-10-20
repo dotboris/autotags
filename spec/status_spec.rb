@@ -2,18 +2,7 @@ describe 'autotags status' do
   let(:root) { tmpdir }
 
   after do
-    begin
-      pidfile = root + '.autotags.pid'
-      if pidfile.exist?
-        pid = pidfile.read.to_i
-        Process.kill 9, pid
-        Process.wait pid
-      end
-    rescue # rubocop:disable Lint/HandleExceptions
-      # ignore error
-    end
-
-    root.rmtree
+    clean_dir root
   end
 
   context 'with no pidfile' do
