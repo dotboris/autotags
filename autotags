@@ -136,7 +136,8 @@ watch() {
 }
 
 run-watch() {
-  local pidfile; pidfile=$(realpath "$(pidfile-path $1)")
+  local path; path=$(realpath $1)
+  local pidfile; pidfile=$(pidfile-path $path)
   echo $BASHPID > $pidfile
   trap 'rm -f $pidfile; exit 0' 15
   cd /
