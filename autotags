@@ -118,19 +118,42 @@ stop() {
   fi
 }
 
+watch() {
+  local path=$1
+  local pidfile; pidfile=$(pidfile-path $path)
+
+  if [ -f "$pidfile" ]; then
+    if pid-running "$(cat $pidfile)"; then
+      display-running $path
+      exit 1
+    else
+      display-dangling-pidfile $path
+      exit 2
+    fi
+  else
+    (run-watch $path > /dev/null 2>&1 &) &
+    exit 0
+  fi
+}
+
+run-watch() {
+  local pidfile; pidfile=$(pidfile-path $1)
+  echo $BASHPID > $pidfile
+  cd /
+  while true; do
+    sleep 10
+  done
+}
+
 dispatch-command() {
   local cmd=$1
   local path=$2
 
   case "$cmd" in
     status) status $path ;;
-    watch)
-      echo 'running watch'
-      ;;
+    watch) watch $path ;;
     stop) stop $path ;;
-    help)
-      display-help
-      ;;
+    help) display-help ;;
     *)
       echo "unknown command: $cmd"
       display-help

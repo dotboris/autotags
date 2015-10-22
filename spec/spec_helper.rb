@@ -35,7 +35,7 @@ def clean_dir(dir)
     if pidfile.exist?
       pid = pidfile.read.to_i
       Process.kill 9, pid
-      Process.wait pid
+      sleep 0.1 # wait a little bit so that the process can actually exit
     end
   rescue # rubocop:disable Lint/HandleExceptions
     # ignore error
