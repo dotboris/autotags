@@ -14,6 +14,12 @@ pid-running() {
   fi
 }
 
+abspath() {
+  pushd "$1" > /dev/null 2>&1
+  pwd
+  popd > /dev/null 2>&1
+}
+
 display-running() {
   echo "looks like autotags is not running in $1"
 }
@@ -136,7 +142,7 @@ watch() {
 }
 
 run-watch() {
-  local path; path=$(realpath $1)
+  local path; path=$(abspath $1)
   local pidfile; pidfile=$(pidfile-path $path)
   echo $BASHPID > $pidfile
   trap 'rm -f $pidfile; exit 0' 15
