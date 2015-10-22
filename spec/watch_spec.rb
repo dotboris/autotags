@@ -28,6 +28,20 @@ describe 'autotags watch' do
       expect(pid_running? pid).to be true
     end
 
+    context 'when killed' do
+      it 'should remove its own pidfile' do
+        autotags 'watch', root
+        sleep 0.1
+        pidfile = root + '.autotags.pid'
+        pid = pidfile.read.to_i
+
+        Process.kill :SIGTERM, pid
+        sleep 0.1
+
+        expect(pidfile).not_to exist
+      end
+    end
+
     it 'should generate ctags'
     it 'should add tags when adding a ruby function'
     it 'should remove tags when removing a function'

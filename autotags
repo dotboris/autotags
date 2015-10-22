@@ -106,7 +106,6 @@ stop() {
 
     if pid-running $pid; then
       kill $pid
-      wait $pid
       exit 0
     else
       display-dangling-pidfile
@@ -137,11 +136,12 @@ watch() {
 }
 
 run-watch() {
-  local pidfile; pidfile=$(pidfile-path $1)
+  local pidfile; pidfile=$(realpath "$(pidfile-path $1)")
   echo $BASHPID > $pidfile
+  trap 'rm -f $pidfile; exit 0' 15
   cd /
   while true; do
-    sleep 10
+    sleep 0.1
   done
 }
 
