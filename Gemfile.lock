@@ -59,6 +59,3 @@ DEPENDENCIES
   guard-rake (~> 1.0)
   rake (~> 10.4)
   rspec (~> 3.3)
-
-BUNDLED WITH
-   1.10.5
