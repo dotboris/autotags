@@ -6,7 +6,7 @@ pidfile-path() {
 }
 
 pid-running() {
-  kill -0 "$1" > /dev/null 1>&2
+  kill -0 "$1" > /dev/null 2>&1
   if [[ "$?" -eq '0' ]]; then
     true
   else
@@ -25,7 +25,7 @@ display-running() {
 }
 
 display-dangling-pidfile() {
-  local pidfile; pidfile=pidfile-path $1
+  local pidfile; pidfile=$(pidfile-path $1)
 
   echo "looks like autotags in not running in $1"
   echo "warning: the lock file $pidfile exists"
@@ -111,7 +111,7 @@ stop() {
     local pid; pid=$(cat $pidfile)
 
     if pid-running $pid; then
-      kill $pid
+      kill -15 $pid
       exit 0
     else
       display-dangling-pidfile
@@ -141,15 +141,33 @@ watch() {
   fi
 }
 
+gen-ctags() {
+  local path=$1
+  ctags -R -o "$path/.ctags" "$path"
+}
+
+ctags-callback() {
+  read _
+  gen-ctags "$1"
+}
+
 run-watch() {
+  local pid=$BASHPID
+  trap 'pgrep -P $pid | xargs kill -15' SIGTERM
+
   local path; path=$(abspath $1)
-  local pidfile; pidfile=$(pidfile-path $path)
-  echo $BASHPID > $pidfile
-  trap 'rm -f $pidfile; exit 0' 15
+  local pidfile; pidfile=$(pidfile-path "$path")
+  echo $pid > "$pidfile"
+
   cd /
-  while true; do
-    sleep 0.1
-  done
+
+  gen-ctags "$path"
+  inotifywait -mrqc -e modify,move,create,delete --exclude .ctags "$path" \
+    | ctags-callback "$path" > /dev/null 2>&1 &
+
+  wait
+
+  rm -rf "$pidfile"
 }
 
 dispatch-command() {

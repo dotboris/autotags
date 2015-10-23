@@ -33,12 +33,10 @@ def clean_dir(dir)
   begin
     pidfile = dir + '.autotags.pid'
     if pidfile.exist?
-      pid = pidfile.read.to_i
-      Process.kill 9, pid
+      Process.kill :SIGTERM, pidfile.read.to_i
       sleep 0.1 # wait a little bit so that the process can actually exit
     end
   rescue # rubocop:disable Lint/HandleExceptions
-    # ignore error
   end
 
   dir.rmtree

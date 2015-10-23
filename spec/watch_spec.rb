@@ -40,11 +40,62 @@ describe 'autotags watch' do
 
         expect(pidfile).not_to exist
       end
+
+      it 'should kill its children' do
+        autotags 'watch', root
+        sleep 0.1
+        pidfile = root + '.autotags.pid'
+        pid = pidfile.read.to_i
+        children = `pgrep -P #{pid}`.split(/\s/)
+
+        Process.kill :SIGTERM, pid
+        sleep 0.1
+
+        children.each do |child|
+          expect(pid_running? child).to be false
+        end
+      end
     end
 
-    it 'should generate ctags'
-    it 'should add tags when adding a ruby function'
-    it 'should remove tags when removing a function'
+    it 'should generate ctags' do
+      autotags 'watch', root
+      sleep 0.1
+
+      expect(root + '.ctags').to exist
+    end
+
+    it 'should add tags when adding a file with code' do
+      autotags 'watch', root
+      sleep 0.1
+
+      (root + 'something.rb').write 'def some_function; end'
+      sleep 0.1
+
+      expect((root + '.ctags').read).to include 'some_function'
+    end
+
+    it 'should remove tags when removing file with code' do
+      (root + 'something.rb').write 'def some_function; end'
+      autotags 'watch', root
+      sleep 0.1
+
+      (root + 'something.rb').delete
+      sleep 0.1
+
+      expect((root + '.ctags').read).not_to include 'some_function'
+    end
+
+    it 'should not change tags when moving a file' do
+      (root + 'something.rb').write 'def some_function; end'
+      autotags 'watch', root
+      sleep 0.1
+
+      expect((root + '.ctags').read).to include 'some_function'
+      (root + 'something.rb').rename(root + 'something_else.rb')
+      sleep 0.1
+
+      expect((root + '.ctags').read).to include 'some_function'
+    end
   end
 
   context 'with a pidfile and proc running' do
