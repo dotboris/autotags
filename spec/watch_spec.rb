@@ -8,13 +8,13 @@ describe 'autotags watch' do
   context 'without a pidfile' do
     it 'should succeed' do
       expect(autotags 'watch', root).to eq 0
-      sleep 0.1 # give time for the pidfile to get created
+      snooze
     end
 
     it 'should create a pidfile' do
       autotags 'watch', root
 
-      sleep 0.1
+      snooze
 
       expect(root + '.autotags.pid').to exist
     end
@@ -22,7 +22,7 @@ describe 'autotags watch' do
     it 'should start a process' do
       autotags 'watch', root
 
-      sleep 0.1
+      snooze
 
       pid = (root + '.autotags.pid').read.to_i
       expect(pid_running? pid).to be true
@@ -31,25 +31,25 @@ describe 'autotags watch' do
     context 'when killed' do
       it 'should remove its own pidfile' do
         autotags 'watch', root
-        sleep 0.1
+        snooze
         pidfile = root + '.autotags.pid'
         pid = pidfile.read.to_i
 
         Process.kill :SIGTERM, pid
-        sleep 0.1
+        snooze
 
         expect(pidfile).not_to exist
       end
 
       it 'should kill its children' do
         autotags 'watch', root
-        sleep 0.1
+        snooze
         pidfile = root + '.autotags.pid'
         pid = pidfile.read.to_i
         children = `pgrep -P #{pid}`.split(/\s/)
 
         Process.kill :SIGTERM, pid
-        sleep 0.1
+        snooze
 
         children.each do |child|
           expect(pid_running? child).to be false
@@ -59,17 +59,17 @@ describe 'autotags watch' do
 
     it 'should generate ctags' do
       autotags 'watch', root
-      sleep 0.1
+      snooze
 
       expect(root + '.ctags').to exist
     end
 
     it 'should add tags when adding a file with code' do
       autotags 'watch', root
-      sleep 0.1
+      snooze
 
       (root + 'something.rb').write 'def some_function; end'
-      sleep 0.1
+      snooze
 
       expect((root + '.ctags').read).to include 'some_function'
     end
@@ -77,10 +77,10 @@ describe 'autotags watch' do
     it 'should remove tags when removing file with code' do
       (root + 'something.rb').write 'def some_function; end'
       autotags 'watch', root
-      sleep 0.1
+      snooze
 
       (root + 'something.rb').delete
-      sleep 0.1
+      snooze
 
       expect((root + '.ctags').read).not_to include 'some_function'
     end
@@ -88,11 +88,11 @@ describe 'autotags watch' do
     it 'should not change tags when moving a file' do
       (root + 'something.rb').write 'def some_function; end'
       autotags 'watch', root
-      sleep 0.1
+      snooze
 
       expect((root + '.ctags').read).to include 'some_function'
       (root + 'something.rb').rename(root + 'something_else.rb')
-      sleep 0.1
+      snooze
 
       expect((root + '.ctags').read).to include 'some_function'
     end

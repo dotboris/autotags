@@ -29,12 +29,16 @@ def dummy_proc
   pid
 end
 
+def snooze
+  sleep 0.1
+end
+
 def clean_dir(dir)
   begin
     pidfile = dir + '.autotags.pid'
     if pidfile.exist?
       Process.kill :SIGTERM, pidfile.read.to_i
-      sleep 0.1 # wait a little bit so that the process can actually exit
+      snooze
     end
   rescue # rubocop:disable Lint/HandleExceptions
   end
