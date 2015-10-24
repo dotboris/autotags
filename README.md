@@ -23,7 +23,30 @@ __TODO__
 Usage
 -----
 
-__TODO__
+Start generating ctags with:
+
+    $ autotags watch
+
+This will watch the current directory and generate ctags whenever you save your
+files.
+
+Optionally, you can specify a folder to watch:
+
+    $ autotags watch path/to/directory
+
+Once you're done, stop generating ctags with:
+
+    $ autotags stop
+
+This will stop watching the current directory.
+
+Optionally, you can specify a folder to stop watching:
+
+    $ autotags stop path/to/directory
+
+You can get more help with:
+
+    $ autotags help
 
 Contributing
 ------------
