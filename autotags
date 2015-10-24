@@ -1,6 +1,10 @@
 #!/bin/bash
 
 # helpers
+verbose() {
+  $verbose && echo $1
+}
+
 pidfile-path() {
   echo "$1/.autotags.pid"
 }
@@ -56,13 +60,13 @@ HELP
 
 # options
 parse-options() {
-  export verbose=0
+  export verbose=false
   export path=.
   OPTIND=1
   while getopts 'hv' opt; do
     case "$opt" in
       v)
-        export verbose=1
+        export verbose=true
         ;;
       h|?)
         display-help
@@ -89,6 +93,7 @@ status() {
 
   if [ -f "$pidfile" ]; then
     local pid; pid="$(cat "$pidfile")"
+    verbose "found pidfile in $pidfile (pid is $pid)"
 
     if pid-running $pid; then
       display-running $path
@@ -136,6 +141,7 @@ watch() {
       exit 2
     fi
   else
+    verbose "starting watch daemon in $path"
     (run-watch $path > /dev/null 2>&1 &) &
     exit 0
   fi
@@ -143,6 +149,7 @@ watch() {
 
 gen-ctags() {
   local path=$1
+  verbose "generating $path/.ctags from files in $path"
   ctags -R -o "$path/.ctags" "$path"
 }
 
