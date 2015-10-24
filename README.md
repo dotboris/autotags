@@ -48,6 +48,18 @@ You can get more help with:
 
     $ autotags help
 
+### A note on source control
+
+Autotags creates files in the directory it's watching. If you're running
+autotags in a directory that is managed by source control you're going to want
+to ignore those files.
+
+You can do this by adding the following lines in your source control's ignore
+file:
+
+    .ctags
+    .autotags.pid
+
 Contributing
 ------------
 
