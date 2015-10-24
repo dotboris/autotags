@@ -21,7 +21,7 @@ abspath() {
 }
 
 display-running() {
-  echo "looks like autotags is not running in $1"
+  echo "looks like autotags is running in $1"
 }
 
 display-dangling-pidfile() {
