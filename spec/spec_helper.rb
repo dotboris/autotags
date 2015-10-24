@@ -12,8 +12,12 @@ end
 
 def raw_autotags(*args)
   script = Pathname.new(__FILE__) + '../../autotags'
-  _, status = Open3.capture2e script.to_s, *(args.map(&:to_s))
-  status.exitstatus
+  stdint, out, status = Open3.popen2e script.to_s, *(args.map(&:to_s))
+
+  code = status.value.exitstatus
+  stdint.close
+  out.autoclose = true
+  code
 end
 
 def tmpdir

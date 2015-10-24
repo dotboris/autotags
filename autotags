@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # helpers
-verbose() {
-  $verbose && echo $1
+echov() {
+  [[ "$verbose" -eq 1 ]] && echo "VERBOSE: $*"
 }
 
 pidfile-path() {
@@ -15,6 +15,26 @@ pid-running() {
     true
   else
     false
+  fi
+}
+
+daemon-status() {
+  local path=$1
+  local pidfile; pidfile=$(pidfile-path $1)
+
+  echov "checking if daemon is running in $path"
+
+  if [ -f "$pidfile" ]; then
+    local pid; pid="$(cat "$pidfile")"
+    echov "found pidfile in $pidfile (pid is $pid)"
+
+    if pid-running $pid; then
+      return 0
+    else
+      return 2
+    fi
+  else
+    return 1
   fi
 }
 
@@ -60,13 +80,13 @@ HELP
 
 # options
 parse-options() {
-  export verbose=false
+  export verbose=0
   export path=.
   OPTIND=1
   while getopts 'hv' opt; do
     case "$opt" in
       v)
-        export verbose=true
+        export verbose=1
         ;;
       h|?)
         display-help
@@ -89,91 +109,82 @@ parse-options() {
 # commands
 status() {
   local path=$1
-  local pidfile; pidfile=$(pidfile-path $1)
 
-  if [ -f "$pidfile" ]; then
-    local pid; pid="$(cat "$pidfile")"
-    verbose "found pidfile in $pidfile (pid is $pid)"
-
-    if pid-running $pid; then
-      display-running $path
-      exit 0
-    else
-      display-dangling-pidfile $path
-      exit 2
-    fi
-  else
-    display-not-running $path
-    exit 1
-  fi
+  daemon-status "$path"
+  case $? in
+    0) display-running $path; exit 0;;
+    1) display-not-running $path; exit 1;;
+    2) display-dangling-pidfile $path; exit 2;;
+  esac
 }
 
 stop() {
   local path=$1
-  local pidfile; pidfile=$(pidfile-path $1)
 
-  if [ -f "$pidfile" ]; then
-    local pid; pid=$(cat $pidfile)
-
-    if pid-running $pid; then
+  daemon-status "$path"
+  case $? in
+    0)
+      local pid; pid=$(cat "$(pidfile-path "$path")")
+      echov "killing pid $pid"
       kill -15 $pid
       exit 0
-    else
-      display-dangling-pidfile
-      exit 2
-    fi
-  else
-    display-not-running $path
-    exit 1
-  fi
+      ;;
+    1) display-not-running $path; exit 1;;
+    2) display-dangling-pidfile $path; exit 2;;
+  esac
 }
 
 watch() {
   local path=$1
-  local pidfile; pidfile=$(pidfile-path $path)
-
-  if [ -f "$pidfile" ]; then
-    if pid-running "$(cat $pidfile)"; then
-      display-running $path
-      exit 1
-    else
-      display-dangling-pidfile $path
-      exit 2
-    fi
-  else
-    verbose "starting watch daemon in $path"
-    (run-watch $path > /dev/null 2>&1 &) &
-    exit 0
-  fi
+  daemon-status "$path"
+  case $? in
+    0) display-running; exit 1;;
+    1)
+      echov "starting watch daemon in $path"
+      (run-watch $path &) &
+      exit 0
+      ;;
+    2) display-dangling-pidfile; exit 2;;
+  esac
 }
 
 gen-ctags() {
   local path=$1
-  verbose "generating $path/.ctags from files in $path"
+  echov "generating $path/.ctags from files in $path"
   ctags -R -o "$path/.ctags" "$path"
 }
 
-ctags-callback() {
-  read _
-  gen-ctags "$1"
+gen-ctags-on-input() {
+  while true; do
+    read input
+    echov "Watch event fired: $input"
+    gen-ctags "$1"
+  done
 }
 
 run-watch() {
   local pid=$BASHPID
+  echov 'trapping SIGTERM'
   trap 'pgrep -P $pid | xargs kill -15' SIGTERM
 
   local path; path=$(abspath $1)
   local pidfile; pidfile=$(pidfile-path "$path")
+  echov "writing pid ($pid) to pidfile ($pidfile)"
   echo $pid > "$pidfile"
 
+  echov 'changing dir to root'
   cd /
 
   gen-ctags "$path"
+
+  echov 'starting watch'
   inotifywait -mrqc -e modify,move,create,delete --exclude .ctags "$path" \
-    | ctags-callback "$path" > /dev/null 2>&1 &
+    | gen-ctags-on-input "$path" &
 
   wait
+  echov 'done watching'
 
+  echov "removing pidfile ($pidfile)"
   rm -rf "$pidfile"
 }
 
@@ -195,4 +206,6 @@ dispatch-command() {
 }
 
 parse-options "$@"
+
+echov "verbose=$verbose cmd=$cmd path=$path"
 dispatch-command $cmd $path
