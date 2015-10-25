@@ -18,7 +18,32 @@ and then running ctags for you when anything changes.
 Install
 -------
 
+### Debian & Ubuntu family
+
 __TODO__
+
+### Fedora & Redhat family
+
+__TODO__
+
+### Arch Linux
+
+Autotags is available in AUR (https://aur.archlinux.org/packages/autotags/). You
+can install it using your favorite AUR helper.
+
+    $ aurhelper -S autotags
+
+### Other Linux distributions
+
+1. Install `ctags`
+1. Install `inotify-tools`
+1. Download [`autotags`](https://github.com/beraboris/autotags/releases/download/v0.1.0/autotags)
+  somewhere in your `$PATH`
+
+### Mac or Windows
+
+You're out of luck. Autotags depends on inotify which is a Linux specific
+protocol.
 
 Usage
 -----
