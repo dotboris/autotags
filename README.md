@@ -88,4 +88,16 @@ file:
 Contributing
 ------------
 
-__TODO__
+If you have a question, found a bug or would like to discuss anything, open a
+[pull request](https://github.com/beraboris/autotags/compare).
+
+If you'd like to contribute code:
+
+1. [Fork](https://github.com/beraboris/autotags#fork-destination-box) this
+  repository
+1. Clone your fork
+1. Make, commit & push your changes
+1. Open a [pull request](https://github.com/beraboris/autotags/compare)
+
+Check out [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to
+contribute.
