@@ -1,3 +1,4 @@
 .vagrant/
 .ctags
 .autotags.pid
+.github-token
