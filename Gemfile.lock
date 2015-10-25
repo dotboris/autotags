@@ -47,6 +47,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.3.0)
     rspec-support (3.3.0)
+    semver (1.0.1)
     shellany (0.0.1)
     slop (3.6.0)
     thor (0.19.1)
@@ -59,3 +60,7 @@ DEPENDENCIES
   guard-rake (~> 1.0)
   rake (~> 10.4)
   rspec (~> 3.3)
+  semver (~> 1.0)
+
+BUNDLED WITH
+   1.10.5
