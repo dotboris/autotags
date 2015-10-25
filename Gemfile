@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rake', '~> 10.4'
 
-gem 'semver', '~> 1.0'
+gem 'semver2', '~> 3.4'
 
 gem 'rspec', '~> 3.3'
 
