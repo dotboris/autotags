@@ -81,6 +81,8 @@ package.
     1. Update the `pkgver` variable
     1. Reset the `pkgrel` variable back to `1`
 
+1. Run `mksrcinfo`
+1. Run `makepkg -g` and update the md5sums variable
 1. Run `makepkg`
 1. Run `namcap autotags-<version>-1-any.pkg.tar.xz` and fix all the errors and
     warnings
