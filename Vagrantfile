@@ -2,7 +2,7 @@ Vagrant.configure(2) do |config|
   config.vm.box = 'ubuntu/trusty64'
   config.vm.provision 'shell', inline: <<-SHELL
     sudo apt-get update
-    sudo apt-get install -y ctags inotify-tools build-essential libgmp-dev
+    sudo apt-get install -y ctags inotify-tools build-essential libgmp-dev git
 
     sudo gpg --keyserver hkp://keys.gnupg.net \
       --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
