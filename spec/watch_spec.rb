@@ -61,7 +61,7 @@ describe 'autotags watch' do
       autotags 'watch', root
       snooze
 
-      expect(root + '.ctags').to exist
+      expect(root + '.tags').to exist
     end
 
     it 'should add tags when adding a file with code' do
@@ -71,7 +71,7 @@ describe 'autotags watch' do
       (root + 'something.rb').write 'def some_function; end'
       snooze
 
-      expect((root + '.ctags').read).to include 'some_function'
+      expect((root + '.tags').read).to include 'some_function'
     end
 
     it 'should remove tags when removing file with code' do
@@ -82,7 +82,7 @@ describe 'autotags watch' do
       (root + 'something.rb').delete
       snooze
 
-      expect((root + '.ctags').read).not_to include 'some_function'
+      expect((root + '.tags').read).not_to include 'some_function'
     end
 
     it 'should not change tags when moving a file' do
@@ -90,11 +90,11 @@ describe 'autotags watch' do
       autotags 'watch', root
       snooze
 
-      expect((root + '.ctags').read).to include 'some_function'
+      expect((root + '.tags').read).to include 'some_function'
       (root + 'something.rb').rename(root + 'something_else.rb')
       snooze
 
-      expect((root + '.ctags').read).to include 'some_function'
+      expect((root + '.tags').read).to include 'some_function'
     end
   end
 

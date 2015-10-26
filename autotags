@@ -145,8 +145,8 @@ watch() {
 
 gen-ctags() {
   local path=$1
-  echov "generating $path/.ctags from files in $path"
-  ctags -R -o "$path/.ctags" "$path"
+  echov "generating $path/.tags from files in $path"
+  ctags -R -o "$path/.tags" "$path"
 }
 
 gen-ctags-on-input() {
@@ -173,7 +173,7 @@ run-watch() {
   gen-ctags "$path"
 
   echov 'starting watch'
-  inotifywait -mrqc -e modify,move,create,delete --exclude .ctags "$path" \
+  inotifywait -mrqc -e modify,move,create,delete --exclude .tags "$path" \
     | gen-ctags-on-input "$path" &
 
   wait

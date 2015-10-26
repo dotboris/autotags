@@ -82,7 +82,7 @@ to ignore those files.
 You can do this by adding the following lines in your source control's ignore
 file:
 
-    .ctags
+    .tags
     .autotags.pid
 
 Contributing
