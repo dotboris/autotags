@@ -37,7 +37,7 @@ can install it using your favorite AUR helper.
 
 1. Install `ctags`
 1. Install `inotify-tools`
-1. Download [`autotags`](https://github.com/beraboris/autotags/releases/download/v0.1.0/autotags)
+1. Download [`autotags`](https://github.com/beraboris/autotags/releases/download/v0.2.0/autotags)
   somewhere in your `$PATH`
 
 ### Mac or Windows
