@@ -1,69 +1,80 @@
-How to contribute
-=================
+# How to contribute
 
-Bug reports, Questions & Comments
----------------------------------
+## Bug reports, Questions & Comments
 
 If you have a bug to report, a question to ask or just a comment, feel free to
-open an [issue](https://github.com/beraboris/autotags/issues/new).
+open an [issue](https://github.com/dotboris/autotags/issues/new).
 
-Contributing code
------------------
+## Contributing code
 
-1. [Fork](https://github.com/beraboris/autotags#fork-destination-box) this
+1. [Fork](https://github.com/dotboris/autotags#fork-destination-box) this
   repository
 1. Clone your fork
 1. Make, commit & push your changes
-1. Open a [pull request](https://github.com/beraboris/autotags/compare)
+1. Open a [pull request](https://github.com/dotboris/autotags/compare)
 
 Be sure to write tests for your new code. If you don't someone might
 accidentally break your feature without realizing it.
 
-Development Environment
------------------------
+## Development Environment
 
 You can setup your development environment with the following steps:
 
 1. Download and install [Vagrant](https://www.vagrantup.com/)
 1. Build the vagrant VM (this may take a while)
 
-        $ vagrant up
+    ```sh
+    vagrant up
+    ```
 
 1. Ssh into the VM
 
-        $ vagrant ssh
-        $ cd /vagrant
+    ```sh
+    vagrant ssh
+    cd /vagrant
+    ```
 
 1. Run the setup script
 
-        $ bin/setup
+    ```sh
+    ./bin/setup
+    ```
 
 Once you're done, you can stop the VM with:
 
-    $ exit
-    $ vagrant suspend
+```sh
+exit
+vagrant suspend
+```
 
 You can run the tests with:
 
-    $ bin/rake
+```sh
+./bin/rake
+```
 
 You can have tests be run automatically when you make changes with:
 
-    $ bin/guard
+```sh
+./bin/guard
+```
 
-Releasing
----------
+## Releasing
 
 For this to work, you'll need to be able to write to this repository.
 
 1. Bump the version
 
-        $ bin/semver inc [major|minor|patch] # pick one
+    ```sh
+    ./bin/semver inc [major|minor|patch] # pick one
+    ```
 
 1. Commit the version bump
 1. Run the release script
 
-        $ bin/rake release
+    ```sh
+    ./bin/rake release
+    ```
 
 1. Edit the `autotags` link in _Other Linux distributions_ in `README.md` to
     point to the latest version.

@@ -1,13 +1,11 @@
-Autotags
-========
+# Autotags
 
-[![Build Status](https://travis-ci.org/beraboris/autotags.svg?branch=master)](https://travis-ci.org/beraboris/autotags)
+[![Build Status](https://travis-ci.org/dotboris/autotags.svg?branch=master)](https://travis-ci.org/dotboris/autotags)
 
 A little tool that watches a given directory and generates
 [ctags](http://ctags.sourceforge.net/) whenever you save your code.
 
-Why?
-----
+## Why?
 
 Many editors and tools make use of ctags to provide a better coding experience.
 This is great. The only issue is that every time you add a class, function,
@@ -15,8 +13,7 @@ variable, method, etc. you need to run ctags again so that your editor knows
 about your new code. Autotags solves that issue by keeping an eye on your files
 and then running ctags for you when anything changes.
 
-Install
--------
+## Install
 
 ### Debian & Ubuntu family
 
@@ -37,7 +34,7 @@ can install it using your favorite AUR helper.
 
 1. Install `ctags`
 1. Install `inotify-tools`
-1. Download [`autotags`](https://github.com/beraboris/autotags/releases/download/v0.2.0/autotags)
+1. Download [`autotags`](https://github.com/dotboris/autotags/releases/download/v0.2.0/autotags)
   somewhere in your `$PATH`
 
 ### Mac or Windows
@@ -85,19 +82,18 @@ file:
     .tags
     .autotags.pid
 
-Contributing
-------------
+## Contributing
 
 If you have a question, found a bug or would like to discuss anything, open a
-[pull request](https://github.com/beraboris/autotags/compare).
+[pull request](https://github.com/dotboris/autotags/compare).
 
 If you'd like to contribute code:
 
-1. [Fork](https://github.com/beraboris/autotags#fork-destination-box) this
+1. [Fork](https://github.com/dotboris/autotags#fork-destination-box) this
   repository
 1. Clone your fork
 1. Make, commit & push your changes
-1. Open a [pull request](https://github.com/beraboris/autotags/compare)
+1. Open a [pull request](https://github.com/dotboris/autotags/compare)
 
 Check out [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to
 contribute.
