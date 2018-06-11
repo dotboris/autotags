@@ -1,0 +1,5 @@
+#!/bin/bash
+cd "$(dirname "$0")/.." || exit 1
+
+version="$(./bin/semver)"
+hub relase create -m "$version" -a autotags "$version"
