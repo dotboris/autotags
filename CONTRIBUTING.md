@@ -61,7 +61,14 @@ You can have tests be run automatically when you make changes with:
 
 ## Releasing
 
-For this to work, you'll need to be able to write to this repository.
+### Setup
+
+For this to work you'll need:
+
+- Write access to this repositoy (be allowed to push tags and to master)
+- The [`hub`](https://github.com/github/hub) command installed.
+
+### Procedure
 
 1. Bump the version
 
@@ -73,13 +80,17 @@ For this to work, you'll need to be able to write to this repository.
 1. Run the release script
 
     ```sh
-    ./bin/rake release
+    ./bin/release
     ```
 
 1. Edit the `autotags` link in _Other Linux distributions_ in `README.md` to
     point to the latest version.
 
 1. Commit & push the changes to `README.md`
+
+    ```sh
+    git push --tags origin master
+    ```
 
 ### Update the AUR package
 
