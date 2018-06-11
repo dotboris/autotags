@@ -1,4 +1,5 @@
 require 'open3'
+require 'tmpdir'
 require 'pathname'
 
 def autotags(command, path = nil, verbose: false)
