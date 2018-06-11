@@ -1,4 +1,4 @@
 .vagrant/
 .tags
 .autotags.pid
-.github-token
+*.log
