@@ -11,11 +11,6 @@ pidfile-path() {
 
 pid-running() {
   kill -0 "$1" > /dev/null 2>&1
-  if [[ "$?" -eq '0' ]]; then
-    true
-  else
-    false
-  fi
 }
 
 daemon-status() {
@@ -39,9 +34,9 @@ daemon-status() {
 }
 
 abspath() {
-  pushd "$1" > /dev/null 2>&1
+  pushd "$1" > /dev/null 2>&1 || return 1
   pwd
-  popd > /dev/null 2>&1
+  popd > /dev/null 2>&1 || return 1
 }
 
 display-running() {
@@ -151,7 +146,7 @@ gen-ctags() {
 
 gen-ctags-on-input() {
   while true; do
-    read input
+    read -r input
     echov "Watch event fired: $input"
     gen-ctags "$1"
   done
@@ -168,7 +163,7 @@ run-watch() {
   echo $pid > "$pidfile"
 
   echov 'changing dir to root'
-  cd /
+  cd / || return 1
 
   gen-ctags "$path"
 
