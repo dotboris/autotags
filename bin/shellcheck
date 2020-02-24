@@ -1,0 +1,6 @@
+#!/bin/bash
+cd "$(dirname "$0")/.." || exit 1
+
+grep --files-with-match -Er \
+  '^#!/bin/(ba)?sh$' bin/ \
+  | xargs shellcheck
