@@ -20,7 +20,7 @@ pid-running() {
 
 daemon-status() {
   local path=$1
-  local pidfile; pidfile=$(pidfile-path $1)
+  local pidfile; pidfile=$(pidfile-path "$1")
 
   echov "checking if daemon is running in $path"
 
@@ -28,7 +28,7 @@ daemon-status() {
     local pid; pid="$(cat "$pidfile")"
     echov "found pidfile in $pidfile (pid is $pid)"
 
-    if pid-running $pid; then
+    if pid-running "$pid"; then
       return 0
     else
       return 2
