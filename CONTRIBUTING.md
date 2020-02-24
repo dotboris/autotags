@@ -59,13 +59,19 @@ You can have tests be run automatically when you make changes with:
 ./bin/guard
 ```
 
+You can lint the shell script (including `autotags` itself) with:
+
+```sh
+./bin/shellcheck
+```
+
 ## Releasing
 
 ### Setup
 
 For this to work you'll need:
 
-- Write access to this repositoy (be allowed to push tags and to master)
+- Write access to this repository (be allowed to push tags and to master)
 - The [`hub`](https://github.com/github/hub) command installed.
 
 ### Procedure
