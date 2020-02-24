@@ -2,5 +2,6 @@
 cd "$(dirname "$0")/.." || exit 1
 
 grep --files-with-match -Er \
-  '^#!/bin/(ba)?sh$' bin/ \
+  --exclude-dir '.git' \
+  '^#!/bin/(ba)?sh$' . \
   | xargs shellcheck
