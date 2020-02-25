@@ -80,9 +80,10 @@ describe 'autotags watch' do
 
       (root + 'something.rb').write "def some_function; end\n"
       snooze
-      (root + 'something.rb').write "def some_other_function; end\n"
-
       expect((root + '.tags').read).to include 'some_function'
+
+      (root + 'something.rb').write "def some_other_function; end\n"
+      snooze
       expect((root + '.tags').read).to include 'some_other_function'
     end
 
