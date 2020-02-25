@@ -1,7 +1,6 @@
 #!/bin/bash
-cd "$(dirname "$0")/.." || exit 1
-
 grep --files-with-match -Er \
-  --exclude-dir '.git' \
-  '^#!/bin/(ba)?sh$' . \
+  --exclude-dir .git \
+  --exclude-dir vendor \
+  '^#!/bin/(ba)?sh$' "$(dirname "$0")" \
   | xargs shellcheck
