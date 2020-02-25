@@ -9,7 +9,8 @@ Vagrant.configure(2) do |config|
       inotify-tools \
       build-essential \
       ruby ruby-dev \
-      git
+      git \
+      shellcheck
     gem install -N bundler
   SHELL
 

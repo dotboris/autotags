@@ -74,6 +74,19 @@ describe 'autotags watch' do
       expect((root + '.tags').read).to include 'some_function'
     end
 
+    it 'should add tags when there is new code in existing file' do
+      autotags 'watch', root
+      snooze
+
+      (root + 'something.rb').write "def some_function; end\n"
+      snooze
+      expect((root + '.tags').read).to include 'some_function'
+
+      (root + 'something.rb').write "def some_other_function; end\n"
+      snooze
+      expect((root + '.tags').read).to include 'some_other_function'
+    end
+
     it 'should remove tags when removing file with code' do
       (root + 'something.rb').write 'def some_function; end'
       autotags 'watch', root

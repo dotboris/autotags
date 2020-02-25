@@ -1,0 +1,6 @@
+#!/bin/bash
+grep --files-with-match -Er \
+  --exclude-dir .git \
+  --exclude-dir vendor \
+  '^#!/bin/(ba)?sh$' "$(dirname "$0")" \
+  | xargs shellcheck
