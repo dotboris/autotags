@@ -11,16 +11,11 @@ pidfile-path() {
 
 pid-running() {
   kill -0 "$1" > /dev/null 2>&1
-  if [[ "$?" -eq '0' ]]; then
-    true
-  else
-    false
-  fi
 }
 
 daemon-status() {
   local path=$1
-  local pidfile; pidfile=$(pidfile-path $1)
+  local pidfile; pidfile=$(pidfile-path "$1")
 
   echov "checking if daemon is running in $path"
 
@@ -28,7 +23,7 @@ daemon-status() {
     local pid; pid="$(cat "$pidfile")"
     echov "found pidfile in $pidfile (pid is $pid)"
 
-    if pid-running $pid; then
+    if pid-running "$pid"; then
       return 0
     else
       return 2
@@ -39,9 +34,9 @@ daemon-status() {
 }
 
 abspath() {
-  pushd "$1" > /dev/null 2>&1
+  pushd "$1" > /dev/null 2>&1 || return 1
   pwd
-  popd > /dev/null 2>&1
+  popd > /dev/null 2>&1 || return 1
 }
 
 display-running() {
@@ -49,7 +44,7 @@ display-running() {
 }
 
 display-dangling-pidfile() {
-  local pidfile; pidfile=$(pidfile-path $1)
+  local pidfile; pidfile=$(pidfile-path "$1")
 
   echo "looks like autotags in not running in $1"
   echo "warning: the lock file $pidfile exists"
@@ -107,9 +102,9 @@ status() {
 
   daemon-status "$path"
   case $? in
-    0) display-running $path; exit 0;;
-    1) display-not-running $path; exit 1;;
-    2) display-dangling-pidfile $path; exit 2;;
+    0) display-running "$path"; exit 0;;
+    1) display-not-running "$path"; exit 1;;
+    2) display-dangling-pidfile "$path"; exit 2;;
   esac
 }
 
@@ -121,11 +116,11 @@ stop() {
     0)
       local pid; pid=$(cat "$(pidfile-path "$path")")
       echov "killing pid $pid"
-      kill -15 $pid
+      kill -15 "$pid"
       exit 0
       ;;
-    1) display-not-running $path; exit 1;;
-    2) display-dangling-pidfile $path; exit 2;;
+    1) display-not-running "$path"; exit 1;;
+    2) display-dangling-pidfile "$path"; exit 2;;
   esac
 }
 
@@ -136,7 +131,7 @@ watch() {
     0) display-running; exit 1;;
     1)
       echov "starting watch daemon in $path"
-      (run-watch $path &) &
+      (run-watch "$path" &) &
       exit 0
       ;;
     2) display-dangling-pidfile; exit 2;;
@@ -151,7 +146,7 @@ gen-ctags() {
 
 gen-ctags-on-input() {
   while true; do
-    read input
+    read -r input
     echov "Watch event fired: $input"
     gen-ctags "$1"
   done
@@ -162,13 +157,13 @@ run-watch() {
   echov 'trapping SIGTERM'
   trap 'pgrep -P $pid | xargs kill -15' SIGTERM
 
-  local path; path=$(abspath $1)
+  local path; path=$(abspath "$1")
   local pidfile; pidfile=$(pidfile-path "$path")
   echov "writing pid ($pid) to pidfile ($pidfile)"
   echo $pid > "$pidfile"
 
   echov 'changing dir to root'
-  cd /
+  cd / || return 1
 
   gen-ctags "$path"
 
@@ -188,9 +183,9 @@ dispatch-command() {
   local path=$2
 
   case "$cmd" in
-    status) status $path ;;
-    watch) watch $path ;;
-    stop) stop $path ;;
+    status) status "$path" ;;
+    watch) watch "$path" ;;
+    stop) stop "$path" ;;
     help) display-help ;;
     *)
       echo "unknown command: $cmd"
@@ -203,4 +198,4 @@ dispatch-command() {
 parse-options "$@"
 
 echov "verbose=$verbose cmd=$cmd path=$path"
-dispatch-command $cmd $path
+dispatch-command "$cmd" "$path"
